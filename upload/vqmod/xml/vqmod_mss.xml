@@ -1,0 +1,109 @@
+<modification>
+	<id>VQMODE MSS</id>
+	<version>1.0</version>
+	<vqmver>2.X</vqmver>
+	<author>savaskartal.com</author>
+	<file name="catalog/controller/checkout/confirm.php">
+		<operation error="skip">
+			<search position="before"><![CDATA[$this->response->setOutput($this->render());]]></search>
+			<add><![CDATA[      $this->data['mss'] = $this->getChild('checkout/mss');]]></add>
+		</operation>
+	</file>
+	<file name="catalog/view/theme/default/template/checkout/confirm.tpl">
+		<operation error="skip">
+			<search position="before"><![CDATA[<div class="payment"><?php echo $payment; ?></div>]]></search>
+			<add><![CDATA[<?php echo $mss; ?>]]></add>
+		</operation>
+	</file>
+
+    <file name="catalog/model/checkout/order.php">
+        <operation error="skip">
+            <search position="before"><![CDATA[if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/mail/order.tpl')) {]]></search>
+            <add><![CDATA[      $template->data['mss'] = $this->mss;]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/mail/order.tpl">
+        <operation error="skip">
+            <search position="before"><![CDATA[<p style="margin-top: 0px; margin-bottom: 20px;"><?php echo $text_footer; ?></p>]]></search>
+            <add><![CDATA[<?php echo $mss; ?>]]></add>
+        </operation>
+    </file>
+
+    <file name="catalog/controller/payment/bank_transfer.php">
+        <operation error="skip">
+            <search position="after"><![CDATA[$this->load->model('checkout/order');]]></search>
+            <add><![CDATA[      $this->model_checkout_order->mss = $this->getChild('checkout/mss');]]></add>
+        </operation>
+    </file>
+    <file name="catalog/controller/payment/bank_transfer.php">
+        <operation error="skip">
+            <search position="before"><![CDATA[$this->render();]]></search>
+            <add><![CDATA[      $this->language->load('checkout/mss_onay');
+            $this->data['text_mss_onay'] = $this->language->get('text_mss_onay');
+            $this->data['text_mss_onay_hata'] = $this->language->get('text_mss_onay_hata');
+            ]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/bank_transfer.tpl">
+        <operation error="skip">
+            <search position="before"><![CDATA[<input type="button" value="<?php echo $button_confirm; ?>" id="button-confirm" class="button" />]]></search>
+            <add><![CDATA[      <?php echo $text_mss_onay; ?><input type="checkbox" id="mss_agree" name="mss_agree" />]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/bank_transfer.tpl">
+        <operation error="skip">
+            <search position="after"><![CDATA[$('#button-confirm').bind('click', function() {]]></search>
+            <add><![CDATA[      var mss_agree = $('#mss_agree').is(':checked');
+            if (mss_agree) {]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/bank_transfer.tpl">
+        <operation error="skip">
+            <search position="after" index="1"><![CDATA[});]]></search>
+            <add><![CDATA[      
+    } else {
+        $('#confirm .checkout-content').prepend('<div class="warning" style="display: none;"><?php echo $text_mss_onay_hata; ?><img src="catalog/view/theme/default/image/close.png" alt="" class="close" /></div>');
+        $('.warning').fadeIn('slow');
+    }]]></add>
+        </operation>
+    </file>
+
+    <file name="catalog/controller/payment/cod.php">
+        <operation error="skip">
+            <search position="after"><![CDATA[$this->load->model('checkout/order');]]></search>
+            <add><![CDATA[      $this->model_checkout_order->mss = $this->getChild('checkout/mss');]]></add>
+        </operation>
+    </file>
+    <file name="catalog/controller/payment/cod.php">
+        <operation error="skip">
+            <search position="before"><![CDATA[$this->render();]]></search>
+            <add><![CDATA[      $this->language->load('checkout/mss_onay');
+            $this->data['text_mss_onay'] = $this->language->get('text_mss_onay');
+            $this->data['text_mss_onay_hata'] = $this->language->get('text_mss_onay_hata');
+            ]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/cod.tpl">
+        <operation error="skip">
+            <search position="before"><![CDATA[<input type="button" value="<?php echo $button_confirm; ?>" id="button-confirm" class="button" />]]></search>
+            <add><![CDATA[      <?php echo $text_mss_onay; ?><input type="checkbox" id="mss_agree" name="mss_agree" />]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/cod.tpl">
+        <operation error="skip">
+            <search position="after"><![CDATA[$('#button-confirm').bind('click', function() {]]></search>
+            <add><![CDATA[      var mss_agree = $('#mss_agree').is(':checked');
+            if (mss_agree) {]]></add>
+        </operation>
+    </file>
+    <file name="catalog/view/theme/default/template/payment/cod.tpl">
+        <operation error="skip">
+            <search position="after" index="1"><![CDATA[});]]></search>
+            <add><![CDATA[      
+    } else {
+        $('#confirm .checkout-content').prepend('<div class="warning" style="display: none;"><?php echo $text_mss_onay_hata; ?><img src="catalog/view/theme/default/image/close.png" alt="" class="close" /></div>');
+        $('.warning').fadeIn('slow');
+    }]]></add>
+        </operation>
+    </file>
+</modification>
